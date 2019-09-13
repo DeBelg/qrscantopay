@@ -1,0 +1,19 @@
+name: qr_mobile_vision_example
+description: Demonstrates how to use the qr_mobile_vision plugin.
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.12.0+2
+  protobuf: ^0.13.15
+  protoc_plugin: ^17.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  qr_mobile_vision: ^0.2.2
+
+
+flutter:
+  uses-material-design: true

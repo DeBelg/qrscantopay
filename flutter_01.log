@@ -1,0 +1,42 @@
+Flutter crash report; please file at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter --no-color run --machine --track-widget-creation --device-id=emulator-5554 lib\main.dart
+
+## exception
+
+SocketException: SocketException: Write failed (OS Error: De pipes wordt gesloten.
+, errno = 232), port = 0
+
+```
+null```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, v1.7.8+hotfix.4, on Microsoft Windows [Version 10.0.17134.950], locale en-GB)
+    • Flutter version 1.7.8+hotfix.4 at C:\Users\michi\Flutter\Flutter
+    • Framework revision 20e59316b8 (7 weeks ago), 2019-07-18 20:04:33 -0700
+    • Engine revision fee001c93f
+    • Dart version 2.4.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 28.0.3)
+    • Android SDK at C:\Users\michi\AppData\Local\Android\sdk
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-28, build-tools 28.0.3
+    • Java binary at: C:\Users\michi\Flutter\ASD\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+    • All Android licenses accepted.
+
+[✓] Android Studio (version 3.5)
+    • Android Studio at C:\Users\michi\Flutter\ASD
+    • Flutter plugin version 39.0.3
+    • Dart plugin version 191.8423
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+
+[✓] Connected device (1 available)
+    • Android SDK built for x86 • emulator-5554 • android-x86 • Android 9 (API 28) (emulator)
+
+• No issues found!
+```
