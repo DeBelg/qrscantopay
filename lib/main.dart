@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:uni_links/uni_links.dart';
-import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   debugPaintSizeEnabled = false;
@@ -30,20 +27,19 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => new _MyAppState();
 }
 
-var qrValue = ""; //value for qr scanner, needs to be decoded once production
+var qrValue; //value for qr scanner, needs to be decoded once production
 //start api build and application
-
+var jsonbody;
 var amount = "1"; //amount for money in eurocents, needs to come from qrValue
 var callbackurl =
     "http://api.qr.al:1880/rest/payments"; //callbackurl for payconiq api
 var description = "Machine Nootjes";
 var reference = "1";
-var url = "https://api.ext.payconiq.com/v3/payments"; //payconiq api url
+var url = "https://api.payconiq.com/v3/payments"; //payconiq api url
 var authorization =
-    "306af5de-883f-4961-b4c8-62ecfcd4f21a"; //api code, needs to be in backend at one point
-var confirmation = "Confirmed";
-var _deeplink = "";
-var contenttype = "application/json";
+    "50de94a0-bb7c-43aa-805a-b348bab066a2"; //api code, needs to be in backend at one point
+var deeplink;
+var links;
 
 class _MyAppState extends State<MyApp> {
   String qr;
@@ -90,7 +86,7 @@ class _MyAppState extends State<MyApp> {
                         ),
                       )
                     : new Center(child: new Text("Camera inactive"))),
-            new Text("QRCODE &: $qrValue"),
+            new Text("QRCODE &: $qr"),
           ],
         ),
       ),
@@ -100,42 +96,49 @@ class _MyAppState extends State<MyApp> {
             textAlign: TextAlign.center,
           ),
           onPressed: () async {
-            http.post(callbackurl,
-                body: ({
+            var capture = await http.post(callbackurl,
+                headers: {
+                  "Authorization": authorization,
+                  "Content-type": "application/json"
+                },
+                body: jsonEncode({
+                  "qr": qr
+                })); //capture the url to send to backend for decoding and receiving backend parsed information
+
+            var capturebody = json.decode(capture.body); //gets the jsonbody
+
+            amount = capturebody[
+                'amount']; //changes the variables with info form our api side
+            description = capturebody['description'];
+            reference = capturebody['reference'];
+
+            var response = await http.post(url,
+                headers: {
+                  "Authorization": authorization,
+                  "Content-type": "application/json"
+                },
+                body: jsonEncode({
                   "amount": amount,
                   "description": description,
+                  "callbackUrl": callbackurl,
                   "reference": reference
-                }));
+                })); //sends post request to payconiq
+
+            jsonbody = json.decode(response.body);
+
+            links = jsonbody['_links'];
+            var _deeplink = links['deeplink'];
+            deeplink = _deeplink[
+                'href']; //Parses the deeplink from the jsonbody, double parsing because there's a href from payconiq before the link
+
+            print(deeplink
+                .toString()
+                .toLowerCase()); //Needs to be lower case because payconiq api sends all in uppercase
+            launch(deeplink.toString().toLowerCase()); //opens deeplink from app
           }
-          //TODO this thing needs to connect to api when pressed
+
           //todo open deeplink on pressed
           ),
     );
   }
-
-/* http
-                  .post(url,
-                      headers: {
-                        "Authorization": authorization,
-                        "Content-Type": contenttype
-                      },
-                      body: json.encode({
-                        "amount": amount,
-                        "description": description,
-                        "reference": reference,
-                        "callbackurl": callbackurl,
-                      }))
-                  .then((response) {
-                //TODO opendeeplink from response
-
-                /*jsonbody = json.decode(response.body);
-                print(jsonbody);
-                qr = jsonbody.toString();
-                /* http.post(callbackurl,
-                                          body: json.encode({
-*/
-
-                                          }));
-*/
-              });*/
 }

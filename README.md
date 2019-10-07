@@ -1,6 +1,4 @@
-# qr_mobile_vision_example
-
-Demonstrates how to use the qr_mobile_vision plugin.
+# Qr scanner with api to pay at payconiq
 
 ## Getting Started
 
